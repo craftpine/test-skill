@@ -15,6 +15,7 @@ type SkillType = {
   departmentName: string;
   skills: any[];
   email: string;
+  roleName: string;
 };
 
 type SkillTableType = {
@@ -39,7 +40,7 @@ export default function SkillTable(props: SkillTableType) {
         isHeaderSticky
         classNames={{
           base: "max-h-[520px] overflow-scroll",
-        //   table: "min-h-[400px]",
+          //   table: "min-h-[400px]",
         }}
       >
         <TableHeader>
@@ -54,12 +55,26 @@ export default function SkillTable(props: SkillTableType) {
           {querySkills?.content?.map((t: SkillType, i: number) => (
             <TableRow key={t.id}>
               <TableCell>{i + 1}</TableCell>
-              <TableCell>{t.fullName}</TableCell>
+              <TableCell>
+                <div className="flex flex-col">
+                  <span className="text-bold text-sm capitalize">
+                    {t.fullName}
+                  </span>
+                  <span className="text-bold text-sm capitalize text-default-400">
+                    {t.roleName}
+                  </span>
+                </div>
+              </TableCell>
               <TableCell>{dayjs(t.birthday).format("YYYY")}</TableCell>
               <TableCell>{t.email}</TableCell>
               <TableCell>
-                {t.skills.map((skill) => (
-                  <span key={skill.id}>{skill.name}</span>
+                {t.skills.map((skill, i) => (
+                  <>
+                    <span key={skill.id}>{skill.name}</span>
+                    {i !== t.skills.length - 1 && (
+                      <span className="mx-1">|</span>
+                    )}
+                  </>
                 ))}
               </TableCell>
               <TableCell>{t.departmentName}</TableCell>

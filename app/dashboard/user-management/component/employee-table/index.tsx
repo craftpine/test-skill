@@ -13,6 +13,8 @@ type EmployeeType = {
   departmentName: string;
   roleName: string;
   email: string;
+  jobName: string;
+  overallLevel: string
 };
 
 type EmployeeTableType = {
@@ -41,16 +43,34 @@ export default function EmployeeTable(props: EmployeeTableType) {
           <TableColumn>#</TableColumn>
           <TableColumn>Full name</TableColumn>
           <TableColumn>Email</TableColumn>
-          <TableColumn>role</TableColumn>
+          <TableColumn>Job Name</TableColumn>
           <TableColumn>Department</TableColumn>
         </TableHeader>
         <TableBody emptyContent={"No rows to display."}>
           {querySkills?.map((t: EmployeeType, i: number) => (
             <TableRow key={t.id}>
               <TableCell>{i + 1}</TableCell>
-              <TableCell>{t.fullName}</TableCell>
+              <TableCell>
+                <div className="flex flex-col">
+                  <span className="text-bold text-sm capitalize">
+                    {t.fullName}
+                  </span>
+                  <span className="text-bold text-sm capitalize text-default-400">
+                    {t.roleName}
+                  </span>
+                </div>
+              </TableCell>
               <TableCell>{t.email}</TableCell>
-              <TableCell>{t.roleName}</TableCell>
+              <TableCell>
+                <div className="flex flex-col">
+                  <span className="text-bold text-sm capitalize">
+                    {t.jobName}
+                  </span>
+                  <span className="text-bold text-sm capitalize text-default-400">
+                    {t.overallLevel}
+                  </span>
+                </div>
+              </TableCell>
               <TableCell>{t.departmentName}</TableCell>
             </TableRow>
           ))}
@@ -59,3 +79,5 @@ export default function EmployeeTable(props: EmployeeTableType) {
     </>
   );
 }
+
+//
