@@ -45,8 +45,9 @@ import CreateSkillModal, { NewSkill } from "./components/create-modal";
 import useFetchSkills from "@/hooks/useFetchSkills";
 import useGetSWR from "@/hooks/useGetSwr";
 import { toast } from "react-toastify";
+import EditModal from "./components/edit-modal";
 
-type SkillType = {
+export type SkillType = {
   certifications: any[];
   id: string;
   name: string;
@@ -58,6 +59,8 @@ export default function Page(props: any) {
   const deleteModalActions = useDisclosure({ id: "deleteModal" });
 
   const createModalActions = useDisclosure({ id: "createModal" });
+
+  const editModalActions = useDisclosure({ id: "editModal" });
 
   const [visibleColumns, setVisibleColumns] = useState<Selection>(
     new Set(["1", "2", "3", "4", "5"])
@@ -84,9 +87,12 @@ export default function Page(props: any) {
 
   const fetchSkillSwr = useFetchSkills(session);
 
-  const [skill, setSkill] = useState<{ name: string; id: string }>({
+  const [skill, setSkill] = useState<SkillType>({
     id: "",
     name: "",
+    ratingScore: 0,
+    yearOfExperience: 0,
+    certifications: [],
   });
 
   const handleOpenAddNewSkill = () => {
@@ -104,7 +110,9 @@ export default function Page(props: any) {
       );
 
       handleSuccess();
-      mutate({ ...data, skills: postData });
+
+      mutate({ ...data, skills: [...postData] }, false);
+
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -118,6 +126,7 @@ export default function Page(props: any) {
     newSkills?.forEach((skill) => {
       postData.push({
         id: skill.id?.value,
+        name: skill.id.label,
         certifications: skill.id.certifications,
         ratingScore: skill.ratingScore?.value ? +skill.ratingScore?.value : 0,
         yearOfExperience: skill.yearOfExperience ? +skill.yearOfExperience : 0,
@@ -128,6 +137,25 @@ export default function Page(props: any) {
       createModalActions.onClose();
       toast.success(
         `Add skills for ${(data as any).fullName} have been sucessfully!`
+      );
+    });
+  };
+
+  const handleUpdateSkills = async (
+    oldSkillid: string,
+    newSkill: SkillType
+  ) => {
+    const postData = [...data.skills].map((t) => {
+      if (t.id === oldSkillid) {
+        t = newSkill;
+      }
+      return t;
+    });
+
+    await modifySkill(postData, () => {
+      editModalActions.onClose();
+      toast.success(
+        `Update skills for ${(data as any).fullName} have been sucessfully!`
       );
     });
   };
@@ -177,6 +205,17 @@ export default function Page(props: any) {
         loading={loading}
       />
 
+      <EditModal
+        isOpen={editModalActions.isOpen}
+        onOpenChange={editModalActions.onOpenChange}
+        skillOptions={fetchSkillSwr.fetchSkills.data?.content}
+        skillOptionsLoading={fetchSkillSwr.fetchSkills.isLoading}
+        handleUpdateSkills={handleUpdateSkills}
+        currentSkills={data?.skills}
+        loading={loading}
+        skill={skill}
+      />
+
       <div className="flex gap-4 items-start">
         <Section delay={0.1}>
           <Card className="min-w-[340px] grid gap-3 p-4" isBlurred>
@@ -201,7 +240,7 @@ export default function Page(props: any) {
                   </span>
                   <div className="grid">
                     <span className="text-sm text-default-400">Brithday</span>
-                    <span>{dayjs(data?.birthday).format("DD-MM-YYYY")}</span>
+                    <span>{data?.birthday ?  dayjs(data?.birthday).format("DD-MM-YYYY") : "-"}</span>
                   </div>
                 </li>
 
@@ -265,8 +304,6 @@ export default function Page(props: any) {
                 className="w-full sm:max-w-[44%]"
                 placeholder="Search by skill name..."
                 startContent={<AiOutlineSearch />}
-                // value={filterValue}
-                // onClear={() => onClear()}
                 onValueChange={onSearchChange}
               />
               <div className="flex gap-3">
@@ -371,7 +408,13 @@ export default function Page(props: any) {
                       </Tooltip>
                       <Tooltip content="Edit skill">
                         <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                          <AiOutlineEdit />
+                          <AiOutlineEdit
+                            onClick={() => {
+                              setSkill(t);
+                              fetchSkillSwr.setShouldFetch(true);
+                              editModalActions.onOpen();
+                            }}
+                          />
                         </span>
                       </Tooltip>
                       <Tooltip color="danger" content="Delete skill">

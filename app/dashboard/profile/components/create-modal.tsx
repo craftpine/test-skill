@@ -36,16 +36,18 @@ type CreateModalType = {
   loading: boolean;
 };
 
-type Option = {
+export type Option = {
   value: string;
   label: string;
   certifications?: any[];
+  description?: string;
 };
 
 export type NewSkill = {
   id: Option;
   ratingScore: Option;
   yearOfExperience: string;
+  certifications: any[]
 };
 
 export default function CreateSkillModal(props: CreateModalType) {
@@ -63,7 +65,7 @@ export default function CreateSkillModal(props: CreateModalType) {
 
   const [id, setId] = useState<Option>({ value: "", label: "" });
 
-  const [yearOfExperience, setYearOfExperience] = useState<string>();
+  const [yearOfExperience, setYearOfExperience] = useState<string>("1");
 
   const [ratingScore, setRatingScore] = useState<Option>({
     value: "1",
@@ -147,14 +149,16 @@ export default function CreateSkillModal(props: CreateModalType) {
   };
 
   const onSubmit = () => {
-    console.log(newSkills, selectedCerts);
-
     const data = newSkills.map((t) => {
-      let tmpCerts: { id: string }[] = [];
+      let tmpCerts: { id: string; name: string; description: string }[] = [];
 
       selectedCerts.forEach((cert) => {
         if (t.id.certifications?.some((ce) => ce.id === cert.value)) {
-          tmpCerts.push({ id: cert.value });
+          tmpCerts.push({
+            id: cert.value,
+            name: cert.label,
+            description: cert.description ?? "",
+          });
         }
       });
 
@@ -163,9 +167,9 @@ export default function CreateSkillModal(props: CreateModalType) {
       return t;
     });
 
-    console.log(newSkills)
+    setNewSkills([]);
 
-    handleAddNewSkills(newSkills);
+    handleAddNewSkills(data);
   };
 
   const handleSetSelectedCert = (e: Option) => {
@@ -181,18 +185,18 @@ export default function CreateSkillModal(props: CreateModalType) {
     setSelectedCerts((certs) => certs.filter((t) => t.value !== value));
 
   const getCerts = (
-    certifications: { id: string; name: string; selected: boolean }[]
+    certifications: { id: string; name: string; description: string }[]
   ) => {
-    console.log(selectedCerts);
     return certifications?.reduce(
       (
-        acc: { value: string; label: string }[],
-        current: { id: string; name: string; selected: boolean }
+        acc: { value: string; label: string; description: string }[],
+        current: { id: string; name: string; description: string }
       ) => {
         if (!selectedCerts.some((t) => t.value == current.id)) {
           acc.push({
             value: current.id,
             label: current.name,
+            description: current.description,
           });
         }
 
@@ -218,13 +222,15 @@ export default function CreateSkillModal(props: CreateModalType) {
               Create Skill
             </ModalHeader>
             <ModalBody>
-              <div className="flex gap-4 items-center">
+              <div className="flex gap-4 items-end">
                 <div className="grow-[1] ">
+                  <label className="block font-medium text-tiny text-foreground pb-1.5 will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none">
+                    Skill name
+                  </label>
                   <Select
                     options={getSkillOptions(skillOptions)}
                     className="react-select-container"
                     classNamePrefix="react-select"
-                    placeholder="Skill name"
                     name="id"
                     value={id}
                     onChange={(e) => setId(e as Option)}
@@ -238,6 +244,8 @@ export default function CreateSkillModal(props: CreateModalType) {
                     size="sm"
                     type="number"
                     name="yearOfExperience"
+                    label="Year of Experience"
+                    labelPlacement="outside"
                     placeholder="Year of Experience"
                     fullWidth={false}
                     value={yearOfExperience}
@@ -246,6 +254,9 @@ export default function CreateSkillModal(props: CreateModalType) {
                 </div>
 
                 <div className="w-[140px]">
+                  <label className="block font-medium text-tiny text-foreground pb-1.5 will-change-auto origin-top-left transition-all !duration-200 !ease-out motion-reduce:transition-none">
+                    Level
+                  </label>
                   <Select
                     className="react-select-container"
                     classNamePrefix="react-select"
@@ -267,8 +278,6 @@ export default function CreateSkillModal(props: CreateModalType) {
                 </Button>
               </div>
               <Divider />
-
-              <>{console.log(newSkills)}</>
               {newSkills.map((skill) => (
                 <>
                   <div
@@ -360,7 +369,7 @@ export default function CreateSkillModal(props: CreateModalType) {
                       isCompact={true}
                       hideIndicator={true}
                     >
-                      <div className=" rounded-md p-4 mt-2 flex gap-4">
+                      <div className=" rounded-md p-4 mt-2 flex gap-4 bg-gray-50">
                         {skill.id?.certifications &&
                           skill.id?.certifications.length > 0 && (
                             <div className=" w-full">
