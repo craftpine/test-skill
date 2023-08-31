@@ -1,0 +1,10 @@
+version: '3'
+services:
+  skill-inventory-frontend:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+    image: skill-inventory-fronend/skill-inventory-fronend:0.0.1
+    container_name: skill-inventory-fronend
+    ports:
+      - 0.0.0.0:3000:3000
