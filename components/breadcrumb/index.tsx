@@ -8,7 +8,7 @@ type BreadcrumbType = {
 export default function Breadcrumb(props: BreadcrumbType) {
   const { data } = props;
 
-  const last = data.splice(-1);
+  const last = data.slice(-1);
 
   return (
     <nav>
@@ -22,9 +22,7 @@ export default function Breadcrumb(props: BreadcrumbType) {
           </React.Fragment>
         ))}
       </ol>
-      <div className="text-3xl font-bold capitalize">
-        <Link href={last[0].url}>{last[0].title}</Link>
-      </div>
+      <div className="text-3xl font-bold capitalize">{last[0].title}</div>
     </nav>
   );
 }

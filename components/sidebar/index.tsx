@@ -13,6 +13,8 @@ import { usePathname } from "next/navigation";
 import { BsCodeSquare } from "react-icons/bs";
 import Section from "../section";
 import CONSTANTS from "@/constants";
+import { LiaSignOutAltSolid } from "react-icons/lia";
+import { signOut } from "next-auth/react";
 
 export default function SideBar() {
   const pathname = usePathname();
@@ -22,26 +24,38 @@ export default function SideBar() {
       title: "Dashboard",
       icon: <AiOutlineHome size={20} />,
       href: "/dashboard",
-      role: [CONSTANTS.PERMISSIONS.ADMIN, CONSTANTS.PERMISSIONS.WRITE, CONSTANTS.PERMISSIONS.READ]
+      role: [
+        CONSTANTS.PERMISSIONS.ADMIN,
+        CONSTANTS.PERMISSIONS.WRITE,
+        CONSTANTS.PERMISSIONS.READ,
+      ],
     },
     {
       title: "Profile",
       icon: <AiOutlineUser size={20} />,
       href: "/dashboard/profile",
-      role: [CONSTANTS.PERMISSIONS.ADMIN, CONSTANTS.PERMISSIONS.WRITE, CONSTANTS.PERMISSIONS.READ, CONSTANTS.PERMISSIONS.BASIC]
-
+      role: [
+        CONSTANTS.PERMISSIONS.ADMIN,
+        CONSTANTS.PERMISSIONS.WRITE,
+        CONSTANTS.PERMISSIONS.READ,
+        CONSTANTS.PERMISSIONS.BASIC,
+      ],
     },
     {
       title: "NTQ Talents",
       icon: <FiUsers size={20} />,
       href: "/dashboard/user-management",
-      role: [CONSTANTS.PERMISSIONS.ADMIN, CONSTANTS.PERMISSIONS.WRITE, CONSTANTS.PERMISSIONS.READ]
+      role: [
+        CONSTANTS.PERMISSIONS.ADMIN,
+        CONSTANTS.PERMISSIONS.WRITE,
+        CONSTANTS.PERMISSIONS.READ,
+      ],
     },
     {
       title: "Roles",
       icon: <AiOutlineKey size={20} />,
       href: "/dashboard/role",
-      role: [CONSTANTS.PERMISSIONS.ADMIN]
+      role: [CONSTANTS.PERMISSIONS.ADMIN],
     },
     {
       title: "Setting",
@@ -86,6 +100,20 @@ export default function SideBar() {
             </Link>
           </motion.li>
         ))}
+        <motion.li
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.5, delay: 0.7 }}
+        >
+          <div
+            className={`flex gap-3 p-3 cursor-pointer rounded-lg hover:text-white hover:bg-han-purple transition-all hover:shadow-2xl`}
+            onClick={() => signOut()}
+          >
+            <LiaSignOutAltSolid size={20} />
+            <span>Log out</span>
+          </div>
+        </motion.li>
       </ul>
     </div>
   );
