@@ -5,6 +5,7 @@ import { ReactNode, useEffect } from "react";
 import { SessionProvider } from "next-auth/react";
 import Fonts from "@/components/font";
 import { ToastContainer } from "react-toastify";
+import Wrapper from "./wrapper";
 
 export default function Providers({ children }: any) {
   return (
@@ -17,7 +18,9 @@ export default function Providers({ children }: any) {
         // Re-fetches session when window is focused
         refetchOnWindowFocus={true}
       >
-        <NextUIProvider>{children}</NextUIProvider>
+        <NextUIProvider>
+          <Wrapper>{children}</Wrapper>
+        </NextUIProvider>
       </SessionProvider>
     </>
   );

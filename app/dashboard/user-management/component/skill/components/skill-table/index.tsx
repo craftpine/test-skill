@@ -1,3 +1,4 @@
+import { SkillTableType, SkillType } from "@/models/skill-search";
 import {
   Table,
   TableHeader,
@@ -7,22 +8,7 @@ import {
   TableCell,
 } from "@nextui-org/react";
 import dayjs from "dayjs";
-
-type SkillType = {
-  id: string;
-  birthday: string;
-  fullName: string;
-  departmentName: string;
-  skills: any[];
-  email: string;
-  roleName: string;
-};
-
-type SkillTableType = {
-  querySkills: {
-    content: SkillType[];
-  };
-};
+import Link from "next/link";
 
 export default function SkillTable(props: SkillTableType) {
   const { querySkills } = props;
@@ -57,15 +43,21 @@ export default function SkillTable(props: SkillTableType) {
               <TableCell>{i + 1}</TableCell>
               <TableCell>
                 <div className="flex flex-col">
-                  <span className="text-bold text-sm capitalize">
-                    {t.fullName}
-                  </span>
+                  <Link
+                    className="relative inline-flex items-center tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 text-sm text-primary no-underline hover:opacity-80 active:opacity-disabled transition-opacity"
+                    href={`/dashboard/employee?email=${t.email}`}
+                  >
+                    <span className="text-bold text-sm capitalize">
+                      {t.fullName}
+                    </span>
+                  </Link>
+
                   <span className="text-bold text-sm capitalize text-default-400">
                     {t.roleName}
                   </span>
                 </div>
               </TableCell>
-              <TableCell>{dayjs(t.birthday).format("YYYY")}</TableCell>
+              <TableCell>{t.birthday ? dayjs(t.birthday).format("YYYY") : '-'}</TableCell>
               <TableCell>{t.email}</TableCell>
               <TableCell>
                 {t.skills.map((skill, i) => (

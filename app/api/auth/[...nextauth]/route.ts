@@ -1,3 +1,6 @@
+import CONSTANTS from "@/constants";
+import axiosInstance from "@/libs/axiosinstance";
+import axios from "axios";
 import NextAuth, { SessionStrategy } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
@@ -6,35 +9,41 @@ const handler = NextAuth({
     GoogleProvider({
       clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_SECRET as string,
-      // authorization: {
-      //   params: {
-      //     prompt: "consent",
-      //     access_type: "offline",
-      //     response_type: "code",
-      //   },
-      // },
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
   ],
   secret: process.env.JWT_SECRET,
   callbacks: {
     async session({ session, token, trigger, newSession }) {
-      console.log("trigger", trigger)
+      let additionalData = {
+        permission: CONSTANTS.PERMISSIONS.BASIC,
+      };
 
-      console.log("SESSION", JSON.stringify(session, null, 2));
-      if (trigger === "update" ) {
-        console.log("NEW SESSION", newSession)
-        // You can update the session in the database if it's not already updated.
-        // await adapter.updateUser(session.user.id, { name: newSession.name })
+      if (session) {
+        axiosInstance.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${token.idToken}`;
 
-        // Make sure the updated value is reflected on the client
-        
+        const data = await axiosInstance.get(
+          `/user/permissions/${session.user?.email}`
+        );
+
+        if (data.data.permission) {
+          additionalData.permission = data.data.permission;
+        }
       }
-      return { ...session, ...token };
+
+      return { ...session, ...token, ...additionalData };
     },
     async jwt({ token, account, user, trigger }) {
       // console.log("JWT", JSON.stringify(token, null, 2));
       // console.log("account", JSON.stringify(account, null, 2));
-      console.log("trigger jwt", trigger)
 
       if (account) {
         token.accessToken = account.access_token;
@@ -46,7 +55,6 @@ const handler = NextAuth({
       return token;
     },
     async redirect({ url, baseUrl }) {
-      console.log(baseUrl);
       return baseUrl;
     },
   },

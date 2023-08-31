@@ -18,18 +18,9 @@ import CONSTANTS from "@/constants";
 export default function Home() {
   const session = useSession();
 
-  console.log(session);
-  // console.log(dayjs().isBefore(dayjs(data?.expires)));
-
   const authenticated = useMemo(() => {
-    return dayjs().isBefore(session.data?.expires)
+    return dayjs().isBefore(session.data?.expires);
   }, [(session.data as any)?.exp]);
-
-
-  useEffect(() => {
-    console.log(dayjs().isBefore(session.data?.expires))
-    // if(session.status === CONSTANTS.NEXT_AUTH_STATE.AUTHENTICATED && )
-  }, [session.data?.expires])
 
   return (
     <>
@@ -39,7 +30,7 @@ export default function Home() {
           <Image isBlurred src={bannerTop.src} alt="NextUI Album Cover" />
         </div>
 
-        <div className="container py-6 px-32 mx-auto">
+        <div className="container md:py-6 md:px-32 px-4 mx-auto">
           <div className="flex flex-wrap ">
             <div className="flex items-center w-full lg:w-1/2">
               <Section delay={0.1}>
@@ -56,8 +47,7 @@ export default function Home() {
 
                   <div className="flex flex-col items-start space-y-3 sm:space-x-4 sm:space-y-0 sm:items-center sm:flex-row">
                     {authenticated ? (
-                      <Button                         color="primary"
-                      >
+                      <Button color="primary" endContent="">
                         <Link href="/dashboard/profile">Get started</Link>
                       </Button>
                     ) : (
@@ -68,6 +58,13 @@ export default function Home() {
                         Continue with Google
                       </Button>
                     )}
+
+                    <Button
+                      startContent={<FcGoogle size={24} />}
+                      onPress={() => signIn("google")}
+                    >
+                      Continue with Google
+                    </Button>
                   </div>
                 </div>
               </Section>

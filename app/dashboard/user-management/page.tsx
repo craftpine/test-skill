@@ -1,28 +1,16 @@
 "use client";
 import { Card, CardBody } from "@nextui-org/card";
 import { Tab, Tabs } from "@nextui-org/tabs";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { LiaCertificateSolid } from "react-icons/lia";
 import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import { GiFamilyTree } from "react-icons/gi";
-import SkillSearch from "./component/skill-search";
-import SkillTable from "./component/skill-table";
-import { Divider } from "@nextui-org/divider";
-import { Spacer } from "@nextui-org/spacer";
-import CertSearch from "./component/cert-search";
-import EmployeeeSearch from "./component/employee-search";
 import Section from "@/components/section";
-import {
-  CertQueryDataType,
-  EmployeeQueryDataType,
-  SkillQueryDataType,
-} from "@/models/skill-search";
-import CertTable from "./component/cert-table";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import EmployeeTable from "./component/employee-table";
-import { useSession } from "next-auth/react";
-import axiosInstance, { updateToken } from "@/libs/axiosinstance";
+import Skill from "./component/skill";
+import Cert from "./component/cert";
+import Employee from "./component/employee";
 
 const TABS = [
   {
@@ -33,10 +21,7 @@ const TABS = [
       </div>
     ),
     key: "skills",
-    searchContent: (props: {
-      handleQuery: (data: SkillQueryDataType) => void;
-    }) => <SkillSearch {...props} />,
-    searchTable: (props: { querySkills: any }) => <SkillTable {...props} />,
+    component: <Skill />,
   },
   {
     title: (
@@ -46,10 +31,7 @@ const TABS = [
       </div>
     ),
     key: "certifications",
-    searchContent: (props: {
-      handleQuery: (data: CertQueryDataType) => void;
-    }) => <CertSearch {...props} />,
-    searchTable: (props: { querySkills: any }) => <CertTable {...props} />,
+    component: <Cert />,
   },
   {
     title: (
@@ -59,23 +41,12 @@ const TABS = [
       </div>
     ),
     key: "employees",
-    searchContent: (props: {
-      handleQuery: (data: EmployeeQueryDataType) => void;
-    }) => <EmployeeeSearch {...props} />,
-    searchTable: (props: { querySkills: any }) => <EmployeeTable {...props} />,
+    component: <Employee />,
   },
 ];
 
 export default function Page() {
-  const { data, status, update } = useSession();
-
   const [selected, setSelected] = useState("skills");
-
-  const [skills, setSkill] = useState([]);
-
-  const [certifications, setCert] = useState([]);
-
-  const [employees, setEmployee] = useState([]);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -87,70 +58,8 @@ export default function Page() {
     setSelected(e);
   };
 
-  const handleQueryCerts = async (postData: SkillQueryDataType) => {
-    try {
-      updateToken((data as any)?.idToken);
-
-      const response = await axiosInstance.post(
-        "/employees/certs-search",
-        postData
-      );
-      setCert(response.data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  const handleQuerySkills = async (postData: SkillQueryDataType) => {
-    try {
-      updateToken((data as any)?.idToken);
-
-      const response = await axiosInstance.post(
-        "/employees/skills-search",
-        postData
-      );
-      setSkill(response.data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  const handleQueryEmployees = async (postData: SkillQueryDataType) => {
-    try {
-      updateToken((data as any)?.idToken);
-
-      const response = await axiosInstance.get("/employees/opms", {
-        params: postData,
-      });
-      setEmployee(response.data);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
-  const handleQuery = useMemo(() => {
-    const obj: any = {
-      skills: handleQuerySkills,
-      certifications: handleQueryCerts,
-      employees: handleQueryEmployees,
-    };
-
-    return obj[selected as any];
-  }, [selected]);
-
-  const querySkills = useMemo(() => {
-    const obj: any = {
-      skills: skills,
-      certifications: certifications,
-      employees: employees,
-    };
-
-    return obj[selected as any];
-  }, [selected, skills, certifications, employees]);
-
   useEffect(() => {
     const tab = searchParams.get("tab");
-    console.log(tab);
     if (tab) {
       setSelected(tab);
     }
@@ -175,24 +84,7 @@ export default function Page() {
         {TABS.map((tab, i) => (
           <Tab key={tab.key} title={tab.title}>
             <Card>
-              <CardBody>
-                {/* <Section delay={0.2}>{tab.searchContent}</Section> */}
-                <Section delay={0.2}>
-                  {tab.searchContent({ handleQuery })}
-                </Section>
-
-                <Spacer y={6} />
-
-                <Section delay={0.3}>
-                  <Divider />
-                </Section>
-
-                <Spacer y={6} />
-
-                <Section delay={0.4}>
-                  {tab.searchTable({ querySkills })}
-                </Section>
-              </CardBody>
+              <CardBody>{tab.component}</CardBody>
             </Card>
           </Tab>
         ))}

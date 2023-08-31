@@ -15,15 +15,24 @@ const SKILL_LEVEL_COLOR_MAPPING = {
 };
 
 const AUTHENTICATED = "authenticated";
+const UNAUTHENTICATED = "unauthenticated";
+
+
+const PERMISSIONS = {
+  ADMIN: "ADMIN",
+  BASIC: "BASIC",
+  READ: "READ",
+  WRITE: "WRITE"
+}
 
 const NEXT_AUTH_STATE = {
   AUTHENTICATED,
+  UNAUTHENTICATED
 };
 
 const SKILLS = [];
 
 for (let [key, value] of Object.entries(SKILL_LEVEL_MAPPING)) {
-  console.log(key, value);
   SKILLS.push({
     id: key,
     name: value,
@@ -34,7 +43,8 @@ const CONSTANTS = {
   SKILL_LEVEL_MAPPING,
   SKILL_LEVEL_COLOR_MAPPING,
   NEXT_AUTH_STATE,
-  SKILLS
+  SKILLS,
+  PERMISSIONS
 };
 
 export default CONSTANTS;

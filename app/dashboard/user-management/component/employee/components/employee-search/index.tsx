@@ -11,7 +11,7 @@ type EmployeeSearchType = {
   handleQuery: (data: EmployeeQueryDataType) => void;
 };
 
-export default function EmployeeeSearch(props: EmployeeSearchType) {
+export default function EmployeeSearch(props: EmployeeSearchType) {
   const { handleQuery } = props;
 
   const router = useRouter();
@@ -32,8 +32,6 @@ export default function EmployeeeSearch(props: EmployeeSearchType) {
     if (data.keyword) query += `&keyword=${data.keyword}`;
 
     router.push(`${pathname}?${query}`);
-
-    console.log(data);
 
     handleQuery(data);
   };
@@ -78,7 +76,7 @@ export default function EmployeeeSearch(props: EmployeeSearchType) {
     <div className="flex items-center">
       <Input
         type="text"
-        label="Employee name or email"
+        // label="Employee name or email"
         placeholder="Enter name or email"
         isClearable={true}
         className="w-1/4"
@@ -96,7 +94,7 @@ export default function EmployeeeSearch(props: EmployeeSearchType) {
 
       <Input
         type="text"
-        label="Department"
+        // label="Department"
         placeholder="Enter department"
         isClearable={true}
         className="w-1/4"

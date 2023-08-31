@@ -6,6 +6,7 @@ import {
   TableRow,
   TableCell,
 } from "@nextui-org/react";
+import Link from "next/link";
 
 type EmployeeType = {
   id: string;
@@ -14,7 +15,7 @@ type EmployeeType = {
   roleName: string;
   email: string;
   jobName: string;
-  overallLevel: string
+  overallLevel: string;
 };
 
 type EmployeeTableType = {
@@ -52,9 +53,15 @@ export default function EmployeeTable(props: EmployeeTableType) {
               <TableCell>{i + 1}</TableCell>
               <TableCell>
                 <div className="flex flex-col">
-                  <span className="text-bold text-sm capitalize">
-                    {t.fullName}
-                  </span>
+                  <Link
+                    className="relative inline-flex items-center tap-highlight-transparent outline-none data-[focus-visible=true]:z-10 data-[focus-visible=true]:outline-2 data-[focus-visible=true]:outline-focus data-[focus-visible=true]:outline-offset-2 text-sm text-primary no-underline hover:opacity-80 active:opacity-disabled transition-opacity"
+                    href={`/dashboard/employee?email=${t.email}`}
+                  >
+                    <span className="text-bold text-sm capitalize">
+                      {t.fullName}
+                    </span>
+                  </Link>
+
                   <span className="text-bold text-sm capitalize text-default-400">
                     {t.roleName}
                   </span>

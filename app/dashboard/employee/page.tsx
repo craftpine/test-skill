@@ -19,6 +19,7 @@ import {
   AiOutlineEdit,
   AiOutlineDelete,
   AiOutlineSearch,
+  AiFillCheckCircle,
 } from "react-icons/ai";
 import { MdOutlineWorkOutline } from "react-icons/md";
 import dayjs from "dayjs";
@@ -40,12 +41,13 @@ import {
 import { Button } from "@nextui-org/button";
 import { Selection } from "@nextui-org/react";
 
-import { AiOutlinePlus, AiOutlineDown, AiOutlineUp } from "react-icons/ai";
+import { AiOutlinePlus, AiOutlineDown } from "react-icons/ai";
 import CreateSkillModal, { NewSkill } from "./components/create-modal";
 import useFetchSkills from "@/hooks/useFetchSkills";
 import useGetSWR from "@/hooks/useGetSwr";
 import { toast } from "react-toastify";
 import EditModal from "./components/edit-modal";
+import { useSearchParams } from "next/navigation";
 import ProfileCard from "@/components/profile-card";
 
 export type SkillType = {
@@ -56,7 +58,7 @@ export type SkillType = {
   yearOfExperience: number;
 };
 
-export default function Page(props: any) {
+export default function Page() {
   const deleteModalActions = useDisclosure({ id: "deleteModal" });
 
   const createModalActions = useDisclosure({ id: "createModal" });
@@ -73,13 +75,12 @@ export default function Page(props: any) {
 
   const session = useSession();
 
-  console.log({session})
+  const searchParams = useSearchParams();
 
   const { data, error, isLoading, mutate } = useGetSWR({
     url:
       session.status == CONSTANTS.NEXT_AUTH_STATE.AUTHENTICATED
-        ? // ? `/employees?email=${(session.data as any).email}`
-          `/employees?email=dai.le1@cloudapps.vn`
+        ? `/employees?email=${searchParams.get("email")}`
         : undefined,
     options: {
       refreshInterval: 0,
@@ -107,8 +108,7 @@ export default function Page(props: any) {
     try {
       setLoading(true);
       await axiosInstance.put(
-        // `/employees/${(session.data as any).email}`,
-        `/employees/dai.le1@cloudapps.vn`,
+        `/employees/${searchParams.get("email")}`,
         postData
       );
 
