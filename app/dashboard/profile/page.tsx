@@ -73,14 +73,14 @@ export default function Page(props: any) {
 
   const session = useSession();
 
-  console.log({session})
+  console.log({ session });
 
   const { data, error, isLoading, mutate } = useGetSWR({
     url:
       session.status == CONSTANTS.NEXT_AUTH_STATE.AUTHENTICATED
-        ? // ? `/employees?email=${(session.data as any).email}`
-          `/employees?email=dai.le1@cloudapps.vn`
-        : undefined,
+        ? `/employees?email=${(session.data as any).email}`
+        : // `/employees?email=dai.le1@cloudapps.vn`
+          undefined,
     options: {
       refreshInterval: 0,
       revalidateIfStale: false,
@@ -107,8 +107,8 @@ export default function Page(props: any) {
     try {
       setLoading(true);
       await axiosInstance.put(
-        // `/employees/${(session.data as any).email}`,
-        `/employees/dai.le1@cloudapps.vn`,
+        `/employees/${(session.data as any).email}`,
+        // `/employees/dai.le1@cloudapps.vn`,
         postData
       );
 
