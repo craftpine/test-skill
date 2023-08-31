@@ -27,6 +27,7 @@ type ProfileCard = {
 
 export default function ProfileCard(props: ProfileCard) {
   const { data } = props;
+  console.log(data);
   return (
     <Card className="min-w-[340px] grid gap-3 p-4" isBlurred>
       <CardHeader className="justify-between">
@@ -101,7 +102,7 @@ export default function ProfileCard(props: ProfileCard) {
             Update at ({dayjs(data?.lastUpdatedDate).format("DD-MM-YYYY")})
           </p>
           <p className=" text-default-400 text-small">
-            {data?.lastUpdatedByName}
+            {data?.lastUpdatedByName ?? "-"}
           </p>
         </div>
         {/* <div className="flex gap-1">
