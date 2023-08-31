@@ -1,16 +1,29 @@
 import Link from "next/link";
 import React from "react";
 
-export default function Breadcrumb() {
+type BreadcrumbType = {
+  data: { title: string; url: string }[];
+};
+
+export default function Breadcrumb(props: BreadcrumbType) {
+  const { data } = props;
+
+  const last = data.splice(-1);
+
   return (
     <nav>
       <ol className="flex gap-2 text-xs mb-2">
-        <li>Home</li>
-        <li>/</li>
-        <li>Contact</li>
+        {data.map((t, i) => (
+          <React.Fragment key={i}>
+            <li>
+              <Link href={t.url}>{t.title}</Link>
+            </li>
+            {i !== data.length - 1 && <li>/</li>}
+          </React.Fragment>
+        ))}
       </ol>
       <div className="text-3xl font-bold capitalize">
-        Dashboard
+        <Link href={last[0].url}>{last[0].title}</Link>
       </div>
     </nav>
   );

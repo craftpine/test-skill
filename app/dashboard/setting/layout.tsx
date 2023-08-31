@@ -14,7 +14,16 @@ export default function Layout({ children }: any) {
       ]}
     >
       <Section delay={0.1}>
-        <Breadcrumb />
+        <Breadcrumb  data={[
+            {
+              title: "Home",
+              url: "/",
+            },
+            {
+              title: "Setting",
+              url: "/dashboard/setting",
+            },
+          ]}/>
       </Section>
       <div className="mt-4">{children}</div>
     </AuthenticatedRoute>
