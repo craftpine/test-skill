@@ -10,13 +10,13 @@ export default function Layout({ children }: any) {
         CONSTANTS.PERMISSIONS.ADMIN,
         CONSTANTS.PERMISSIONS.WRITE,
         // CONSTANTS.PERMISSIONS.BASIC,
-        CONSTANTS.PERMISSIONS.READ,
+        // CONSTANTS.PERMISSIONS.READ,
       ]}
     >
       <Section delay={0.1}>
         <Breadcrumb />
       </Section>
-      {children}
+      <div className="mt-4">{children}</div>
     </AuthenticatedRoute>
   );
 }

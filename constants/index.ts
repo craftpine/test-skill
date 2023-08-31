@@ -16,6 +16,7 @@ const SKILL_LEVEL_COLOR_MAPPING = {
 
 const AUTHENTICATED = "authenticated";
 const UNAUTHENTICATED = "unauthenticated";
+const LOADING = "loading"
 
 
 const PERMISSIONS = {
@@ -27,7 +28,8 @@ const PERMISSIONS = {
 
 const NEXT_AUTH_STATE = {
   AUTHENTICATED,
-  UNAUTHENTICATED
+  UNAUTHENTICATED,
+  LOADING
 };
 
 const SKILLS = [];

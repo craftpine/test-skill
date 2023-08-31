@@ -1,3 +1,6 @@
+import Link from "next/link";
+import React from "react";
+
 export default function Breadcrumb() {
   return (
     <nav>
@@ -6,7 +9,9 @@ export default function Breadcrumb() {
         <li>/</li>
         <li>Contact</li>
       </ol>
-      <div className="text-3xl font-bold">Dashboard</div>
+      <div className="text-3xl font-bold capitalize">
+        Dashboard
+      </div>
     </nav>
   );
 }

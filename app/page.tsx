@@ -24,7 +24,7 @@ export default function Home() {
 
   return (
     <>
-      <LandingNavbar />
+      {/* <LandingNavbar /> */}
       <div className="relative">
         <div className="mt-2 absolute bottom-0 left-0 w-full -z-10">
           <Image isBlurred src={bannerTop.src} alt="NextUI Album Cover" />
@@ -58,13 +58,6 @@ export default function Home() {
                         Continue with Google
                       </Button>
                     )}
-
-                    <Button
-                      startContent={<FcGoogle size={24} />}
-                      onPress={() => signIn("google")}
-                    >
-                      Continue with Google
-                    </Button>
                   </div>
                 </div>
               </Section>
